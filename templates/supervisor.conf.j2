@@ -1,0 +1,9 @@
+[program:minecraft]
+directory={{ app_root }}
+command=java -Xms{{ memory_min }} -Xmx{{ memory_max }} -jar minecraft_server.jar nogui
+stdout_logfile={{ log_root }}/minecraft.log
+stdout_logfile_maxbytes={{ logfile_maxsize }}
+stderr_logfile={{ log_root }}/minecraft.err
+stderr_logfile_maxbytes={{ logfile_maxsize }}
+autostart=true
+autorestart=true

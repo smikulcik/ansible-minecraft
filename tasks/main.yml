@@ -1,0 +1,47 @@
+---
+- name: install supervisor
+  apt: name=supervisor state=present
+
+- name: create app dir
+  file:
+    path="{{ app_root }}"
+    state=directory
+    mode=0755
+
+- name: create backup dir
+  file:
+    path="{{ backup_dir }}"
+    state=directory
+    mode=0755
+
+- name: create log dir
+  file:
+    path="{{ log_root }}"
+    state=directory
+    mode=0755
+
+- name: download Minecraft Jar
+  get_url:
+    url: "{{ mirror }}/{{ version }}/minecraft_server.{{ version }}.jar"
+    dest: "{{ app_root }}/minecraft_server.jar"
+    validate_certs: no
+
+- name: accept eula
+  template:
+    src=eula.txt
+    dest="{{app_root}}/eula.txt"
+
+- name: add Supervisor conf
+  template:
+    src=supervisor.conf.j2
+    dest=/etc/supervisor/conf.d/minecraft.conf
+ 
+- name: ensure backup cronjob exists
+  cron:
+    name="backup minecraft data"
+    minute="0"
+    hour='*'
+    job="tar -cvzf {{ backup_dir }}/minecraft${date +\\%H}.tar.gz {{ app_root }}"
+
+- name: ensure minecraft is running
+  supervisorctl: name=minecraft state=restarted

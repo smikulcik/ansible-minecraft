@@ -1,0 +1,10 @@
+---
+- name: install minecraft
+  hosts: local
+  become: yes
+  roles:
+    - {
+      role: "smola.java",
+      java_packages: ["openjdk-7-jre-headless", "openjdk-7-jdk"]
+    }
+    - ansible-minecraft
