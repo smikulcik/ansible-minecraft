@@ -43,5 +43,11 @@
     hour='*'
     job="tar -cvzf {{ backup_dir }}/minecraft${date +\\%H}.tar.gz {{ app_root }}"
 
+- name: add restore script conf
+  template:
+    src=restore.sh.j2
+    dest=/usr/bin/restore.sh
+    mode=0555
+ 
 - name: ensure minecraft is running
   supervisorctl: name=minecraft state=restarted

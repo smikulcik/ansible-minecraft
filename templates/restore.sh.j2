@@ -1,0 +1,22 @@
+# get hour of backup from first arg
+hr=$1
+supervisorctl stop minecraft
+if [ -z "$1" ]
+then
+    echo "using last backup"
+    hr=$(date +%H)
+    # move hour back by one to get the last backup
+    hr=$(($hr - 1 +24))
+    hr=$(( $hr % 24)) fi sleep 1
+fi
+
+# backup current state into a backuprestore file
+ssepoch=$(date  +%s)
+tar -czf "{{ backup_dir }}/beforerestore${ssepoch}.tar.gz" {{ app_root }}
+
+echo "restoreing minecraft from ${hr}:00"
+mv {{ app_root }} /tmp
+mkdir {{ app_root }}
+cd {{ app_root }}
+tar -C / -xzf {{ backup_dir }}/minecraft${hr}.tar.gz
+supervisorctl start minecraft
