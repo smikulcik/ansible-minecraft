@@ -25,6 +25,7 @@
     url: "{{ mirror }}/{{ version }}/minecraft_server.{{ version }}.jar"
     dest: "{{ app_root }}/minecraft_server.jar"
     validate_certs: no
+    force: yes
 
 - name: accept eula
   template:
